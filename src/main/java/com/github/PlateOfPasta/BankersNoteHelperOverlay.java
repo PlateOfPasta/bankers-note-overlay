@@ -38,9 +38,9 @@ class BankersNoteHelperOverlay extends WidgetItemOverlay
         var storedItemImage = itemManager.getImage(currentBankerNoteItem.getCanonItemId());
         var widgetRectangle = widgetItem.getCanvasBounds();
 
-        // config scale is a range from 0-100,
-        // but the transform range needs to be from 0.0 to 1.0.
-        double scale = config.overlayRenderScale() / 100.0;
+        // Config scale is a range from 1-100,
+        // but the transform range needs to be from 0.01 to 1.0.
+        double scale = clampScale(config.overlayRenderScale()) / 100.0;
 
         var transformOp = getOverlayTransform(
             config.renderCorner(),
@@ -52,6 +52,12 @@ class BankersNoteHelperOverlay extends WidgetItemOverlay
         );
 
         graphics.drawImage(storedItemImage, transformOp, widgetRectangle.x, widgetRectangle.y);
+    }
+
+    private static int clampScale(int scale)
+    {
+        if (scale < 1) return 1;
+        else return Math.min(scale, 100);
     }
 
     private static AffineTransformOp getOverlayTransform(
